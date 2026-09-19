@@ -1,0 +1,40 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+
+actor Customer as "Customer"
+actor Barber as "Barber"
+actor Admin as "Admin"
+actor Payment as "Payment Service"
+
+rectangle "1. Users Management" as P1
+rectangle "2. Appointments Management" as P2
+rectangle "3. Schedule Management" as P3
+rectangle "4. Shop Management" as P4
+rectangle "5. Orders Management" as P5
+
+database "Users" as D1
+database "Appointments" as D2
+database "ServiceProviders" as D3
+database "Products" as D4
+database "Orders" as D5
+
+Customer --> P1 : registration / login
+Customer --> P2 : book / change / cancel
+Customer --> P4 : choose products
+Customer --> P5 : delivery details
+Barber   --> P3 : working hours
+Barber   --> P2 : view calendar
+Admin    --> P1 : permissions
+Admin    --> P4 : manage products
+
+P1 <--> D1
+P2 <--> D2
+P3 <--> D3
+P4 <--> D4
+P5 <--> D5
+P2 ..> D3 : read free hours
+P5 ..> D4 : update stock
+P5 --> Payment : credit details
+Payment --> P5 : approval
+@enduml

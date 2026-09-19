@@ -1,0 +1,21 @@
+@startuml
+actor User
+participant GUI
+participant "Users Manager" as UM
+database "Users DB" as DB
+
+User -> GUI : enter email and password
+User -> GUI : click "Login"
+GUI -> UM : sendLoginData()
+UM -> DB : findUserByEmail()
+DB --> UM : user record
+UM -> UM : compare password hash
+alt credentials correct
+UM -> UM : create JWT token with role
+UM --> GUI : token + user role
+GUI --> User : open interface by role
+else credentials wrong
+UM --> GUI : authentication failed
+GUI --> User : show error message
+end
+@enduml

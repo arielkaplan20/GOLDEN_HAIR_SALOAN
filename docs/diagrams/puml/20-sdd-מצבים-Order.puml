@@ -1,0 +1,23 @@
+@startuml
+skinparam backgroundColor white
+
+[*] --> Pending : customer completes cart
+
+Pending --> Paid : payment approved
+Pending --> Failed : payment declined
+Failed --> Pending : customer retries
+
+Paid --> Preparing : admin starts preparing order
+
+Preparing --> ReadyForPickup : delivery type = pickup
+Preparing --> Shipped : delivery type = delivery
+
+ReadyForPickup --> Collected : customer collected it
+Shipped --> Delivered : package arrived
+
+Paid --> Cancelled : order cancelled before preparing
+
+Collected --> [*]
+Delivered --> [*]
+Cancelled --> [*]
+@enduml

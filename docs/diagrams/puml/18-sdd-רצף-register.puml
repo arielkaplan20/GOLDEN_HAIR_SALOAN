@@ -1,0 +1,41 @@
+@startuml
+participant UserController as UC
+participant UserService as US
+participant AuthService as AUTH
+participant User as U
+database MongoDB as DB
+
+UC -> UC : validate required fields
+UC -> UC : check password == confirmPassword
+alt validation failed
+UC --> UC : return 400 with errors
+else validation passed
+UC -> US : findByEmail(email)
+activate US
+US -> DB : findOne({ email })
+DB --> US : result
+US --> UC : existing user or null
+deactivate US
+
+alt email already exists
+UC --> UC : return "Email already registered"
+else email is free
+UC -> AUTH : hashPassword(plainPassword)
+activate AUTH
+AUTH -> AUTH : generate salt
+AUTH -> AUTH : bcrypt hash
+AUTH --> UC : hashed password
+deactivate AUTH
+
+UC -> US : createUser(data with hash)
+activate US
+US -> U : new User(data)
+U -> DB : save()
+DB --> U : saved document
+U --> US : created user
+US --> UC : user
+deactivate US
+UC --> UC : return success
+end
+end
+@enduml

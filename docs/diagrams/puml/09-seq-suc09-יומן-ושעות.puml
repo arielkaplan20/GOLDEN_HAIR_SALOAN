@@ -1,0 +1,27 @@
+@startuml
+actor Barber
+participant GUI
+participant "Schedule Manager" as SCM
+database "Appointments DB" as ADB
+database "ServiceProviders DB" as SDB
+
+Barber -> GUI : open "Appointments Calendar"
+GUI -> SCM : getMyCalendar(barberId)
+SCM -> ADB : findAppointments(barberId)
+ADB --> SCM : appointments of this barber only
+SCM --> GUI : calendar data
+GUI --> Barber : display calendar
+Barber -> GUI : open "Edit Working Hours"
+GUI -> SCM : getWorkingHours(barberId)
+SCM -> SDB : findProvider(barberId)
+SDB --> SCM : current working hours
+SCM --> GUI : working hours
+Barber -> GUI : set days and hours
+Barber -> GUI : click "Save"
+GUI -> SCM : updateWorkingHours()
+SCM -> SCM : validate close time after open time
+SCM -> SDB : saveWorkingHours()
+SDB --> SCM : saved
+SCM --> GUI : update confirmed
+GUI --> Barber : show confirmation
+@enduml

@@ -1,0 +1,18 @@
+@startuml
+actor Admin
+participant GUI
+participant "Appointments Manager" as AM
+database "Appointments DB" as DB
+
+Admin -> GUI : open "Appointments Management"
+GUI -> AM : getAllAppointments()
+AM -> DB : findAllAppointments()
+DB --> AM : all appointments in system
+alt appointments exist
+AM --> GUI : appointments details
+GUI --> Admin : display all appointments
+else none
+AM --> GUI : empty list
+GUI --> Admin : "No existing appointments"
+end
+@enduml

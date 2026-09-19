@@ -1,0 +1,25 @@
+@startuml
+actor Admin
+participant GUI
+participant "Users Manager" as UM
+database "Users DB" as DB
+
+Admin -> GUI : open "User Management"
+GUI -> UM : getAllUsers()
+UM -> DB : findAllUsers()
+DB --> UM : users list
+UM --> GUI : users
+GUI --> Admin : display users list
+Admin -> GUI : select user and change role
+GUI --> Admin : show confirmation dialog
+alt admin confirms
+Admin -> GUI : click "Yes"
+GUI -> UM : updateUserRole()
+UM -> DB : saveRole()
+DB --> UM : updated
+UM --> GUI : role updated
+GUI --> Admin : show confirmation
+else admin declines
+GUI --> Admin : no change made
+end
+@enduml

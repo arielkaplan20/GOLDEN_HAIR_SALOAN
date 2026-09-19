@@ -1,0 +1,30 @@
+@startuml
+actor Customer
+participant GUI
+participant "Appointments Manager" as AM
+database "Appointments DB" as ADB
+database "ServiceProviders DB" as SDB
+
+Customer -> GUI : choose barber
+Customer -> GUI : choose date from calendar
+GUI -> AM : getFreeSlots(barberId, date)
+AM -> SDB : getWorkingHours(barberId, day)
+SDB --> AM : open and close time
+AM -> ADB : getAppointments(barberId, date)
+ADB --> AM : taken appointments
+AM -> AM : calculate free slots
+alt free slots exist
+AM --> GUI : list of free hours
+GUI --> Customer : show free hours only
+Customer -> GUI : choose hour and confirm
+GUI -> AM : bookAppointment()
+AM -> ADB : check slot still free
+ADB --> AM : still free
+AM -> ADB : saveAppointment()
+AM --> GUI : booking confirmed
+GUI --> Customer : show confirmation
+else no free slots
+AM --> GUI : empty list
+GUI --> Customer : "No free hours on this date"
+end
+@enduml

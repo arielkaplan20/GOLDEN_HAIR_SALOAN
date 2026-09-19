@@ -1,0 +1,60 @@
+@startuml
+skinparam backgroundColor white
+hide methods
+
+class User {
++String firstName
++String lastName
++String email
++String password
++String address
++Date birthDate
++String phone
++String role
+}
+
+class Appointment {
++ObjectId customerId
++ObjectId barberId
++String date
++String startTime
++int duration
++String serviceType
++String status
+}
+
+class WorkingHours {
++ObjectId barberId
++int dayOfWeek
++String openTime
++String closeTime
++boolean isClosed
+}
+
+class Product {
++String name
++String description
++double price
++int stock
++String imageUrl
+}
+
+class Order {
++String orderNumber
++ObjectId customerId
++List<CartItem> items
++double totalPrice
++String deliveryType
++String address
++String status
++Date orderDate
+}
+
+class CartItem {
++ObjectId productId
++int quantity
++double priceAtPurchase
+}
+
+Order *-- CartItem
+@enduml

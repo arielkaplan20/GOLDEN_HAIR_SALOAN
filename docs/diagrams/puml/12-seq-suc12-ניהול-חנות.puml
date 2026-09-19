@@ -1,0 +1,31 @@
+@startuml
+actor Admin
+participant GUI
+participant "Shop Manager" as SM
+database "Shop DB" as DB
+
+Admin -> GUI : open "Shop Management"
+GUI -> SM : getProducts()
+SM -> DB : findAllProducts()
+DB --> SM : products list
+SM --> GUI : products
+GUI --> Admin : display products
+Admin -> GUI : add / update / delete product
+GUI -> SM : saveProduct()
+SM -> SM : validate product details
+alt valid
+SM -> DB : saveProduct()
+DB --> SM : saved
+SM --> GUI : success
+GUI --> Admin : show confirmation
+else invalid
+SM --> GUI : validation error
+GUI --> Admin : show error message
+end
+Admin -> GUI : open "View Orders"
+GUI -> SM : getAllOrders()
+SM -> DB : findAllOrders()
+DB --> SM : orders list
+SM --> GUI : orders
+GUI --> Admin : display all orders
+@enduml

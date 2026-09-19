@@ -1,0 +1,30 @@
+@startuml
+start
+:Admin clicks "Shop Management";
+:System loads products from DB;
+if (Which action?) then (Add / Update)
+:Admin enters product details;
+if (Details valid?) then (yes)
+:System saves product to DB;
+:Show success message;
+else (no)
+:Show error message;
+:Return to details form;
+endif
+else (Delete)
+:Show delete confirmation;
+if (Confirmed?) then (yes)
+:System deletes product;
+:Show success message;
+else (no)
+:No change;
+endif
+endif
+:Admin opens "View Orders";
+if (Orders exist?) then (yes)
+:Display all orders;
+else (no)
+:Show "No existing orders";
+endif
+stop
+@enduml

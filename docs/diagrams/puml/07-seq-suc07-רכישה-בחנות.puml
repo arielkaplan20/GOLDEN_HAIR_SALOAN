@@ -1,0 +1,34 @@
+@startuml
+actor Customer
+participant GUI
+participant "Shop Manager" as SM
+database "Shop DB" as DB
+participant "Payment Service" as PAY
+
+Customer -> GUI : browse products
+GUI -> SM : getProducts()
+SM -> DB : findAllProducts()
+DB --> SM : products list
+SM --> GUI : products
+Customer -> GUI : choose product and quantity
+Customer -> GUI : click "Add to Cart"
+Customer -> GUI : open "My Cart"
+Customer -> GUI : click "Checkout"
+Customer -> GUI : choose pickup or delivery
+Customer -> GUI : enter order details
+Customer -> GUI : enter credit card details
+GUI -> SM : submitOrder()
+SM -> PAY : processPayment(card details)
+alt payment approved
+PAY --> SM : approved + transaction id
+SM -> DB : saveOrder()
+SM -> DB : updateStock()
+DB --> SM : saved
+SM --> GUI : order number
+GUI --> Customer : confirmation + order number
+else payment declined
+PAY --> SM : declined
+SM --> GUI : payment failed
+GUI --> Customer : "Payment failed, please try again"
+end
+@enduml

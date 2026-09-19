@@ -1,0 +1,26 @@
+@startuml
+actor User
+participant GUI
+participant "Users Manager" as UM
+database "Users DB" as DB
+
+User -> GUI : open "My Profile"
+GUI -> UM : getUserDetails(userId)
+UM -> DB : findUser(userId)
+DB --> UM : user details
+UM --> GUI : details
+GUI --> User : display current details
+User -> GUI : edit details
+User -> GUI : click "Save"
+GUI -> UM : updateProfile()
+UM -> UM : validate fields
+alt valid
+UM -> DB : updateUser()
+DB --> UM : updated
+UM --> GUI : update success
+GUI --> User : show confirmation
+else invalid
+UM --> GUI : validation error
+GUI --> User : show error message
+end
+@enduml

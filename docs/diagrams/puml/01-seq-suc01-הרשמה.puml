@@ -1,0 +1,21 @@
+@startuml
+actor User
+participant GUI
+participant "Users Manager" as UM
+database "Users DB" as DB
+
+User -> GUI : enter personal details
+User -> GUI : click "Finish Registration"
+GUI -> UM : sendRegistrationData()
+UM -> UM : validate fields and password match
+alt details are valid
+UM -> UM : hash password (bcrypt)
+UM -> DB : saveNewUser()
+DB --> UM : saved successfully
+UM --> GUI : registration success
+GUI --> User : show confirmation, go to login page
+else details invalid
+UM --> GUI : validation errors
+GUI --> User : show error message
+end
+@enduml

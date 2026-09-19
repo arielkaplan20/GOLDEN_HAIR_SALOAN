@@ -1,0 +1,26 @@
+@startuml
+skinparam backgroundColor white
+hide methods
+
+class User
+class Customer
+class ServiceProvider
+class Admin
+class Appointment
+class WorkingHours
+class Product
+class CartItem
+class Order
+
+User <|-- Customer
+User <|-- ServiceProvider
+User <|-- Admin
+
+Customer "1" -- "0..*" Appointment : books >
+ServiceProvider "1" -- "0..*" Appointment : serves >
+ServiceProvider "1" *-- "0..7" WorkingHours : defines >
+Customer "1" -- "0..*" Order : places >
+Order "1" *-- "1..*" CartItem : contains >
+CartItem "0..*" -- "1" Product : refers to >
+Admin "1" -- "0..*" Product : manages >
+@enduml

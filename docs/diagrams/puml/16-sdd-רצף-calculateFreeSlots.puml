@@ -1,0 +1,38 @@
+@startuml
+participant AppointmentController as AC
+participant AppointmentService as AS
+participant ScheduleService as SS
+participant Appointment as AP
+database MongoDB as DB
+
+AC -> AS : calculateFreeSlots(barberId, date, duration)
+activate AS
+AS -> SS : getWorkingHours(barberId, dayOfWeek)
+activate SS
+SS -> DB : findOne({ barberId, dayOfWeek })
+DB --> SS : working hours record
+SS --> AS : openTime, closeTime
+deactivate SS
+
+alt barber is closed this day
+AS --> AC : empty list
+else barber works
+AS -> AS : buildAllSlots(openTime, closeTime, 15)
+AS -> AP : find({ barberId, date })
+activate AP
+AP -> DB : query appointments
+DB --> AP : taken appointments
+AP --> AS : appointments list
+deactivate AP
+
+loop for each candidate slot
+loop for each taken appointment
+AS -> AS : isOverlapping(slot, slotEnd, apptStart, apptEnd)
+end
+AS -> AS : check slotEnd <= closeTime
+AS -> AS : check slot is not in the past
+end
+AS --> AC : free slots list
+end
+deactivate AS
+@enduml

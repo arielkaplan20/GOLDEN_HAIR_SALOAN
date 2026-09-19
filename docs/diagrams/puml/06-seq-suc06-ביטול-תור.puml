@@ -1,0 +1,25 @@
+@startuml
+actor Customer
+participant GUI
+participant "Appointments Manager" as AM
+database "Appointments DB" as DB
+
+Customer -> GUI : open "Cancel Appointment"
+GUI -> AM : getMyAppointments(customerId)
+AM -> DB : findAppointments(customerId)
+DB --> AM : appointments list
+AM --> GUI : display list
+Customer -> GUI : click "Cancel" on an appointment
+GUI --> Customer : show confirmation dialog
+alt customer confirms
+Customer -> GUI : click "Yes"
+GUI -> AM : cancelAppointment(appointmentId)
+AM -> DB : deleteAppointment()
+DB --> AM : deleted, slot released
+AM --> GUI : cancellation confirmed
+GUI --> Customer : show confirmation
+else customer declines
+Customer -> GUI : click "No"
+GUI --> Customer : no change made
+end
+@enduml

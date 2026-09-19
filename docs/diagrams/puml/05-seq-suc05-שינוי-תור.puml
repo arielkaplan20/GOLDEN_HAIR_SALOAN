@@ -1,0 +1,26 @@
+@startuml
+actor Customer
+participant GUI
+participant "Appointments Manager" as AM
+database "Appointments DB" as DB
+
+Customer -> GUI : open "Change Appointment"
+GUI -> AM : getMyAppointments(customerId)
+AM -> DB : findAppointments(customerId)
+DB --> AM : appointments list
+AM --> GUI : display list
+Customer -> GUI : click "Change" on an appointment
+Customer -> GUI : choose new date
+GUI -> AM : getFreeSlots(barberId, newDate)
+AM -> DB : getAppointments(barberId, newDate)
+DB --> AM : taken appointments
+AM -> AM : calculate free slots
+AM --> GUI : free hours
+Customer -> GUI : choose new hour and confirm
+GUI -> AM : updateAppointment()
+AM -> DB : release old slot
+AM -> DB : save new slot
+DB --> AM : updated
+AM --> GUI : change confirmed
+GUI --> Customer : show confirmation
+@enduml

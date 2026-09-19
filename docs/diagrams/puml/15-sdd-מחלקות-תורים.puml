@@ -1,0 +1,42 @@
+@startuml
+skinparam backgroundColor white
+
+class AppointmentController {
++bookAppointment(req, res)
++getMyAppointments(req, res)
++updateAppointment(req, res)
++cancelAppointment(req, res)
++getFreeSlots(req, res)
++getAllAppointments(req, res)
+}
+
+class AppointmentService {
++calculateFreeSlots(barberId, date, duration)
++isSlotAvailable(barberId, date, time, duration)
++createAppointment(data)
++changeAppointment(id, newDate, newTime)
++deleteAppointment(id)
+-isOverlapping(startA, endA, startB, endB)
+}
+
+class Appointment {
++ObjectId customerId
++ObjectId barberId
++String date
++String startTime
++int duration
++String serviceType
++String status
++save()
++remove()
+}
+
+class ScheduleService {
++getWorkingHours(barberId, dayOfWeek)
++updateWorkingHours(barberId, hours)
+}
+
+AppointmentController --> AppointmentService : uses
+AppointmentService --> Appointment : creates / reads
+AppointmentService --> ScheduleService : gets working hours
+@enduml

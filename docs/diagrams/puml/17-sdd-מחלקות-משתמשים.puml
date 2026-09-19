@@ -1,0 +1,53 @@
+@startuml
+skinparam backgroundColor white
+
+class UserController {
++register(req, res)
++login(req, res)
++getProfile(req, res)
++updateProfile(req, res)
++getAllUsers(req, res)
++updateUserRole(req, res)
+}
+
+class UserService {
++createUser(data)
++findByEmail(email)
++updateUser(id, data)
++changeRole(id, newRole)
++getAll()
+}
+
+class AuthService {
++hashPassword(plain)
++comparePassword(plain, hash)
++generateToken(user)
++verifyToken(token)
++countFailedAttempt(email)
++isAccountLocked(email)
+}
+
+class User {
++String firstName
++String lastName
++String email
++String password
++String address
++Date birthDate
++String phone
++String role
++int failedAttempts
++Date lockedUntil
++save()
+}
+
+class AuthMiddleware {
++requireLogin(req, res, next)
++requireRole(role)
+}
+
+UserController --> UserService : uses
+UserController --> AuthService : uses
+UserService --> User : creates / reads
+AuthMiddleware --> AuthService : verifies token
+@enduml

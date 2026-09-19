@@ -1,0 +1,18 @@
+@startuml
+actor Customer
+participant GUI
+participant "Appointments Manager" as AM
+database "Appointments DB" as DB
+
+Customer -> GUI : open "My Appointments"
+GUI -> AM : getMyAppointments(customerId)
+AM -> DB : findFutureAppointments(customerId)
+DB --> AM : appointments list
+alt appointments exist
+AM --> GUI : appointments details
+GUI --> Customer : display appointments
+else no appointments
+AM --> GUI : empty list
+GUI --> Customer : "No existing appointments"
+end
+@enduml

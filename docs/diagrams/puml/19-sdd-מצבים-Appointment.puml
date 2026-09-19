@@ -1,0 +1,21 @@
+@startuml
+skinparam backgroundColor white
+
+[*] --> Scheduled : customer books appointment
+
+Scheduled --> Rescheduled : customer changes date/time
+Rescheduled --> Rescheduled : changed again
+
+Scheduled --> Cancelled : customer cancels
+Rescheduled --> Cancelled : customer cancels
+
+Scheduled --> Completed : appointment took place
+Rescheduled --> Completed : appointment took place
+
+Scheduled --> NoShow : customer did not arrive
+Rescheduled --> NoShow : customer did not arrive
+
+Cancelled --> [*]
+Completed --> [*]
+NoShow --> [*]
+@enduml
