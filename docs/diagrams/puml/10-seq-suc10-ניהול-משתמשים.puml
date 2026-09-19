@@ -1,25 +1,52 @@
 @startuml
-actor Admin
-participant GUI
-participant "Users Manager" as UM
-database "Users DB" as DB
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam sequence {
+ArrowColor black
+ArrowFontColor black
+ActorBorderColor black
+ActorBackgroundColor #66CCFF
+LifeLineBorderColor black
+LifeLineBackgroundColor #99DDFF
+ParticipantBorderColor black
+ParticipantBackgroundColor #66CCFF
+ParticipantFontColor black
+ParticipantFontSize 13
+GroupBorderColor black
+GroupBackgroundColor white
+GroupHeaderFontColor black
+}
 
-Admin -> GUI : open "User Management"
-GUI -> UM : getAllUsers()
-UM -> DB : findAllUsers()
-DB --> UM : users list
-UM --> GUI : users
-GUI --> Admin : display users list
-Admin -> GUI : select user and change role
-GUI --> Admin : show confirmation dialog
-alt admin confirms
-Admin -> GUI : click "Yes"
-GUI -> UM : updateUserRole()
-UM -> DB : saveRole()
-DB --> UM : updated
-UM --> GUI : role updated
-GUI --> Admin : show confirmation
-else admin declines
-GUI --> Admin : no change made
+actor "מנהל ראשי" as A
+participant "ניהול המשתמשים" as UM
+participant "מסד נתוני המשתמשים" as DB
+
+activate A
+A -> UM : 1.0 כניסה לאזור "ניהול משתמשים"
+activate UM
+UM -> DB : 1.1 שליפת רשימת המשתמשים
+activate DB
+DB --> UM : 1.2 החזרת הרשימה
+deactivate DB
+UM -> A : 1.3 הצגת רשימת המשתמשים
+deactivate UM
+
+A -> UM : 2.0 בחירת משתמש ושינוי ההרשאה
+activate UM
+UM -> A : 2.1 הצגת חלון אישור השינוי
+deactivate UM
+
+group sd Loop
+A -> UM : 3.0 אישור השינוי
+activate UM
+UM -> DB : 3.1 עדכון ההרשאה
+activate DB
+DB --> UM : 3.2 אישור העדכון
+deactivate DB
+UM -> A : 3.3 הודעת אישור על עדכון ההרשאה
+UM -> A : 3.4 סיום ללא שינוי אם המנהל לא אישר
+deactivate UM
 end
+deactivate A
 @enduml

@@ -1,25 +1,52 @@
 @startuml
-actor Customer
-participant GUI
-participant "Appointments Manager" as AM
-database "Appointments DB" as DB
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam sequence {
+ArrowColor black
+ArrowFontColor black
+ActorBorderColor black
+ActorBackgroundColor #66CCFF
+LifeLineBorderColor black
+LifeLineBackgroundColor #99DDFF
+ParticipantBorderColor black
+ParticipantBackgroundColor #66CCFF
+ParticipantFontColor black
+ParticipantFontSize 13
+GroupBorderColor black
+GroupBackgroundColor white
+GroupHeaderFontColor black
+}
 
-Customer -> GUI : open "Cancel Appointment"
-GUI -> AM : getMyAppointments(customerId)
-AM -> DB : findAppointments(customerId)
-DB --> AM : appointments list
-AM --> GUI : display list
-Customer -> GUI : click "Cancel" on an appointment
-GUI --> Customer : show confirmation dialog
-alt customer confirms
-Customer -> GUI : click "Yes"
-GUI -> AM : cancelAppointment(appointmentId)
-AM -> DB : deleteAppointment()
-DB --> AM : deleted, slot released
-AM --> GUI : cancellation confirmed
-GUI --> Customer : show confirmation
-else customer declines
-Customer -> GUI : click "No"
-GUI --> Customer : no change made
+actor "לקוח" as C
+participant "ניהול התורים" as AM
+participant "מסד נתוני התורים" as DB
+
+activate C
+C -> AM : 1.0 כניסה לאזור "ביטול תור"
+activate AM
+AM -> DB : 1.1 שליפת התורים הקיימים
+activate DB
+DB --> AM : 1.2 החזרת רשימת התורים
+deactivate DB
+AM -> C : 1.3 הצגת התורים
+deactivate AM
+
+C -> AM : 2.0 לחיצה על כפתור ביטול
+activate AM
+AM -> C : 2.1 הצגת חלון אישור הביטול
+deactivate AM
+
+group sd Loop
+C -> AM : 3.0 אישור הביטול
+activate AM
+AM -> DB : 3.1 מחיקת התור ושחרור המועד
+activate DB
+DB --> AM : 3.2 אישור המחיקה
+deactivate DB
+AM -> C : 3.3 הודעת אישור ביטול התור
+AM -> C : 3.4 סיום ללא שינוי אם הלקוח לא אישר
+deactivate AM
 end
+deactivate C
 @enduml

@@ -1,21 +1,45 @@
 @startuml
-actor User
-participant GUI
-participant "Users Manager" as UM
-database "Users DB" as DB
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam sequence {
+ArrowColor black
+ArrowFontColor black
+ActorBorderColor black
+ActorBackgroundColor #66CCFF
+LifeLineBorderColor black
+LifeLineBackgroundColor #99DDFF
+ParticipantBorderColor black
+ParticipantBackgroundColor #66CCFF
+ParticipantFontColor black
+ParticipantFontSize 13
+GroupBorderColor black
+GroupBackgroundColor white
+GroupHeaderFontColor black
+}
 
-User -> GUI : enter personal details
-User -> GUI : click "Finish Registration"
-GUI -> UM : sendRegistrationData()
-UM -> UM : validate fields and password match
-alt details are valid
-UM -> UM : hash password (bcrypt)
-UM -> DB : saveNewUser()
-DB --> UM : saved successfully
-UM --> GUI : registration success
-GUI --> User : show confirmation, go to login page
-else details invalid
-UM --> GUI : validation errors
-GUI --> User : show error message
+actor "משתמש" as U
+participant "ניהול המשתמשים" as UM
+participant "מסד נתוני המשתמשים" as DB
+
+activate U
+U -> UM : 1.0 לחיצה על כפתור ההרשמה
+UM -> U : 1.1 החזרת טופס ההרשמה
+
+group sd Loop
+U -> UM : 2.0 הזנת הפרטים האישיים
+activate UM
+UM -> UM : 2.1 בדיקת תקינות ומלאות הפרטים
+UM -> UM : 2.2 בדיקת התאמה בין הסיסמאות
+UM -> U : 2.3 הצגת שגיאה אם הפרטים אינם תקינים
+deactivate UM
 end
+
+UM -> UM : 3.0 הצפנת הסיסמה
+UM -> DB : 3.1 שמירת המשתמש החדש
+activate DB
+DB --> UM : 3.2 אישור השמירה
+deactivate DB
+UM -> U : 3.3 הודעת הרשמה בהצלחה והפניה לדף הכניסה
+deactivate U
 @enduml

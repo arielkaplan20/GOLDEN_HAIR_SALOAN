@@ -1,31 +1,60 @@
 @startuml
-actor Admin
-participant GUI
-participant "Shop Manager" as SM
-database "Shop DB" as DB
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam sequence {
+ArrowColor black
+ArrowFontColor black
+ActorBorderColor black
+ActorBackgroundColor #66CCFF
+LifeLineBorderColor black
+LifeLineBackgroundColor #99DDFF
+ParticipantBorderColor black
+ParticipantBackgroundColor #66CCFF
+ParticipantFontColor black
+ParticipantFontSize 13
+GroupBorderColor black
+GroupBackgroundColor white
+GroupHeaderFontColor black
+}
 
-Admin -> GUI : open "Shop Management"
-GUI -> SM : getProducts()
-SM -> DB : findAllProducts()
-DB --> SM : products list
-SM --> GUI : products
-GUI --> Admin : display products
-Admin -> GUI : add / update / delete product
-GUI -> SM : saveProduct()
-SM -> SM : validate product details
-alt valid
-SM -> DB : saveProduct()
-DB --> SM : saved
-SM --> GUI : success
-GUI --> Admin : show confirmation
-else invalid
-SM --> GUI : validation error
-GUI --> Admin : show error message
+actor "מנהל ראשי" as A
+participant "ניהול החנות" as SM
+participant "מסד נתוני החנות" as DB
+
+activate A
+A -> SM : 1.0 כניסה לאזור "ניהול חנות"
+activate SM
+SM -> DB : 1.1 שליפת רשימת המוצרים
+activate DB
+DB --> SM : 1.2 החזרת המוצרים
+deactivate DB
+SM -> A : 1.3 הצגת המוצרים
+deactivate SM
+
+group sd Loop
+A -> SM : 2.0 הוספה, עדכון או מחיקה של מוצר
+activate SM
+SM -> SM : 2.1 בדיקת תקינות פרטי המוצר
+SM -> A : 2.2 הצגת שגיאה אם הפרטים אינם תקינים
+deactivate SM
 end
-Admin -> GUI : open "View Orders"
-GUI -> SM : getAllOrders()
-SM -> DB : findAllOrders()
-DB --> SM : orders list
-SM --> GUI : orders
-GUI --> Admin : display all orders
+
+activate SM
+SM -> DB : 3.0 עדכון המוצר במסד הנתונים
+activate DB
+DB --> SM : 3.1 אישור העדכון
+deactivate DB
+SM -> A : 3.2 הודעת אישור על ביצוע הפעולה
+deactivate SM
+
+A -> SM : 4.0 כניסה לאזור "צפייה בהזמנות"
+activate SM
+SM -> DB : 4.1 שליפת כלל ההזמנות
+activate DB
+DB --> SM : 4.2 החזרת ההזמנות
+deactivate DB
+SM -> A : 4.3 הצגת כלל ההזמנות
+deactivate SM
+deactivate A
 @enduml

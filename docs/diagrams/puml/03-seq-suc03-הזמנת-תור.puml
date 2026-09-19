@@ -1,30 +1,56 @@
 @startuml
-actor Customer
-participant GUI
-participant "Appointments Manager" as AM
-database "Appointments DB" as ADB
-database "ServiceProviders DB" as SDB
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam sequence {
+ArrowColor black
+ArrowFontColor black
+ActorBorderColor black
+ActorBackgroundColor #66CCFF
+LifeLineBorderColor black
+LifeLineBackgroundColor #99DDFF
+ParticipantBorderColor black
+ParticipantBackgroundColor #66CCFF
+ParticipantFontColor black
+ParticipantFontSize 13
+GroupBorderColor black
+GroupBackgroundColor white
+GroupHeaderFontColor black
+}
 
-Customer -> GUI : choose barber
-Customer -> GUI : choose date from calendar
-GUI -> AM : getFreeSlots(barberId, date)
-AM -> SDB : getWorkingHours(barberId, day)
-SDB --> AM : open and close time
-AM -> ADB : getAppointments(barberId, date)
-ADB --> AM : taken appointments
-AM -> AM : calculate free slots
-alt free slots exist
-AM --> GUI : list of free hours
-GUI --> Customer : show free hours only
-Customer -> GUI : choose hour and confirm
-GUI -> AM : bookAppointment()
-AM -> ADB : check slot still free
-ADB --> AM : still free
-AM -> ADB : saveAppointment()
-AM --> GUI : booking confirmed
-GUI --> Customer : show confirmation
-else no free slots
-AM --> GUI : empty list
-GUI --> Customer : "No free hours on this date"
+actor "לקוח" as C
+participant "ניהול התורים" as AM
+participant "מסד נתוני התורים" as ADB
+participant "מסד נתוני נותני השירות" as SDB
+
+activate C
+C -> AM : 1.0 בחירת נותן השירות
+C -> AM : 1.1 בחירת תאריך מלוח השנה
+
+group sd Loop
+activate AM
+AM -> SDB : 2.0 שליפת שעות העבודה ליום שנבחר
+activate SDB
+SDB --> AM : 2.1 החזרת שעת פתיחה ושעת סגירה
+deactivate SDB
+AM -> ADB : 2.2 שליפת התורים התפוסים בתאריך
+activate ADB
+ADB --> AM : 2.3 החזרת רשימת התורים
+deactivate ADB
+AM -> AM : 2.4 חישוב השעות הפנויות
+AM -> C : 2.5 הצגת השעות הפנויות בלבד
+AM -> C : 2.6 הודעה אם אין שעות פנויות בתאריך
+deactivate AM
 end
+
+C -> AM : 3.0 בחירת שעה ולחיצה על אישור
+activate AM
+AM -> ADB : 3.1 בדיקה חוזרת שהשעה עדיין פנויה
+activate ADB
+ADB --> AM : 3.2 אישור שהשעה פנויה
+deactivate ADB
+AM -> ADB : 3.3 שמירת התור
+AM -> C : 3.4 הודעת אישור הזמנת התור
+deactivate AM
+deactivate C
 @enduml

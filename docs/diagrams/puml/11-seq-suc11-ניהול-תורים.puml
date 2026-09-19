@@ -1,18 +1,40 @@
 @startuml
-actor Admin
-participant GUI
-participant "Appointments Manager" as AM
-database "Appointments DB" as DB
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam sequence {
+ArrowColor black
+ArrowFontColor black
+ActorBorderColor black
+ActorBackgroundColor #66CCFF
+LifeLineBorderColor black
+LifeLineBackgroundColor #99DDFF
+ParticipantBorderColor black
+ParticipantBackgroundColor #66CCFF
+ParticipantFontColor black
+ParticipantFontSize 13
+GroupBorderColor black
+GroupBackgroundColor white
+GroupHeaderFontColor black
+}
 
-Admin -> GUI : open "Appointments Management"
-GUI -> AM : getAllAppointments()
-AM -> DB : findAllAppointments()
-DB --> AM : all appointments in system
-alt appointments exist
-AM --> GUI : appointments details
-GUI --> Admin : display all appointments
-else none
-AM --> GUI : empty list
-GUI --> Admin : "No existing appointments"
+actor "מנהל ראשי" as A
+participant "ניהול התורים" as AM
+participant "מסד נתוני התורים" as DB
+
+activate A
+A -> AM : 1.0 כניסה לאזור "ניהול תורים"
+activate AM
+AM -> DB : 1.1 שליפת כלל התורים במערכת
+activate DB
+DB --> AM : 1.2 החזרת רשימת התורים
+deactivate DB
+
+group sd Loop
+AM -> AM : 2.0 בדיקה אם קיימים תורים
+AM -> A : 2.1 הצגת פירוט כלל התורים
+AM -> A : 2.2 הצגת ההודעה "אין תורים קיימים במערכת"
 end
+deactivate AM
+deactivate A
 @enduml

@@ -1,21 +1,44 @@
 @startuml
-actor User
-participant GUI
-participant "Users Manager" as UM
-database "Users DB" as DB
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam sequence {
+ArrowColor black
+ArrowFontColor black
+ActorBorderColor black
+ActorBackgroundColor #66CCFF
+LifeLineBorderColor black
+LifeLineBackgroundColor #99DDFF
+ParticipantBorderColor black
+ParticipantBackgroundColor #66CCFF
+ParticipantFontColor black
+ParticipantFontSize 13
+GroupBorderColor black
+GroupBackgroundColor white
+GroupHeaderFontColor black
+}
 
-User -> GUI : enter email and password
-User -> GUI : click "Login"
-GUI -> UM : sendLoginData()
-UM -> DB : findUserByEmail()
-DB --> UM : user record
-UM -> UM : compare password hash
-alt credentials correct
-UM -> UM : create JWT token with role
-UM --> GUI : token + user role
-GUI --> User : open interface by role
-else credentials wrong
-UM --> GUI : authentication failed
-GUI --> User : show error message
+actor "משתמש" as U
+participant "ניהול המשתמשים" as UM
+participant "מסד נתוני המשתמשים" as DB
+
+activate U
+U -> UM : 1.0 כניסה לדף ההתחברות
+UM -> U : 1.1 החזרת דף הכניסה
+
+group sd Loop
+U -> UM : 2.0 הזנת דוא"ל וסיסמה
+activate UM
+UM -> DB : 2.1 שליפת המשתמש לפי הדוא״ל
+activate DB
+DB --> UM : 2.2 החזרת פרטי המשתמש
+deactivate DB
+UM -> UM : 2.3 השוואת הסיסמה המוצפנת
+UM -> U : 2.4 הצגת שגיאה אם הפרטים שגויים
+deactivate UM
 end
+
+UM -> UM : 3.0 יצירת אסימון הזדהות עם ההרשאות
+UM -> U : 3.1 פתיחת הממשק המותאם להרשאות המשתמש
+deactivate U
 @enduml
