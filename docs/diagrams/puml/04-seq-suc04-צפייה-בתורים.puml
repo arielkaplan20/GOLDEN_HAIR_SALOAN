@@ -24,17 +24,16 @@ participant "Appointments Manager" as AM
 participant "Appointments DB" as DB
 
 activate C
-C -> AM : 1.0 כניסה לאזור "התורים שלי"
+C -> AM : צעד 1 - הלקוח נכנס לאזור "התורים שלי"
 activate AM
-AM -> DB : 1.1 שליפת התורים העתידיים של הלקוח
+AM -> DB : צעד 2 - המערכת שולפת את התורים העתידיים\nשל הלקוח ממסד הנתונים
 activate DB
-DB --> AM : 1.2 החזרת רשימת התורים
+DB --> AM : צעד 2.1 - מסד הנתונים מחזיר את רשימת התורים
 deactivate DB
 
 group sd Loop
-AM -> AM : 2.0 בדיקה אם קיימים תורים
-AM -> C : 2.1 הצגת פירוט התורים הקיימים
-AM -> C : 2.2 הצגת ההודעה "אין תורים קיימים"
+AM -> C : צעד 3 - המערכת בודקת ומציגה את פירוט\nהתורים הקיימים
+AM -> C : הסתעפות א.1 בצעד 3 - המערכת מציגה הודעה "אין תורים קיימים"
 end
 deactivate AM
 deactivate C
