@@ -1,0 +1,27 @@
+# Node
+node_modules/
+npm-debug.log*
+package-lock.json.bak
+
+# סביבה - לא מעלים סיסמאות ומפתחות לגיט
+.env
+.env.local
+*.pem
+
+# קבצים זמניים של Word
+~$*.docx
+~$*.doc
+*.tmp
+
+# מערכת הפעלה
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# עורכים
+.vscode/
+.idea/
+
+# בנייה
+dist/
+build/
