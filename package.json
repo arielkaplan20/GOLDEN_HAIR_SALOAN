@@ -1,0 +1,27 @@
+{
+  "name": "golden-hair-salon",
+  "version": "1.0.0",
+  "description": "אתר לניהול תורים במספרת גברים ולמכירת מוצרים הקשורים לשיער.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arielkaplan20/GOLDEN_HAIR_SALOAN.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arielkaplan20/GOLDEN_HAIR_SALOAN/issues"
+  },
+  "homepage": "https://github.com/arielkaplan20/GOLDEN_HAIR_SALOAN#readme",
+  "dependencies": {
+    "docx": "^9.7.1"
+  }
+}
