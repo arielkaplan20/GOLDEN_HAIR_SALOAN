@@ -1,0 +1,674 @@
+/* ============================================================
+   עיצוב האתר
+   הצבעים הראשיים: זהב על רקע כהה, בהתאם לשם GOLDEN HAIR SALON
+   ============================================================ */
+
+:root {
+  --gold: #c9a227;
+  --gold-light: #e3c15a;
+  --dark: #1a1a1a;
+  --dark-2: #262626;
+  --grey: #f5f5f5;
+  --grey-text: #6b6b6b;
+  --border: #e0e0e0;
+  --red: #c0392b;
+  --green: #27834a;
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Heebo", Arial, sans-serif;
+  background: var(--grey);
+  color: var(--dark);
+  direction: rtl;
+}
+
+/* ---------- פריסה כללית ---------- */
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--gold);
+}
+
+.card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- הסרגל העליון ---------- */
+
+.navbar {
+  background: var(--dark);
+  color: white;
+  padding: 0 16px;
+}
+
+.navbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-height: 62px;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  color: #ddd;
+  text-decoration: none;
+  padding: 7px 11px;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.nav-links a:hover {
+  background: var(--dark-2);
+  color: var(--gold-light);
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #bbb;
+}
+
+.cart-count {
+  background: var(--gold);
+  color: var(--dark);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-inline-start: 4px;
+}
+
+/* ---------- טפסים ---------- */
+
+.form-row {
+  margin-bottom: 14px;
+}
+
+.form-row label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 15px;
+  background: white;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+textarea {
+  min-height: 75px;
+  resize: vertical;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+
+/* ---------- כפתורים ---------- */
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 7px;
+  font-size: 15px;
+  padding: 10px 18px;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn {
+  background: var(--gold);
+  color: var(--dark);
+  font-weight: 700;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--gold-light);
+}
+
+.btn-full {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+}
+
+.btn-dark {
+  background: var(--dark);
+  color: white;
+}
+
+.btn-dark:hover:not(:disabled) {
+  background: var(--dark-2);
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+.btn-danger {
+  background: var(--red);
+  color: white;
+}
+
+.btn-light {
+  background: var(--grey);
+  color: var(--dark);
+  border: 1px solid var(--border);
+}
+
+/* ---------- הודעות ---------- */
+
+.message {
+  padding: 11px 14px;
+  border-radius: 7px;
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+.message.error {
+  background: #fdeaea;
+  color: var(--red);
+  border: 1px solid #f5c6c6;
+}
+
+.message.success {
+  background: #e8f6ed;
+  color: var(--green);
+  border: 1px solid #c3e6d0;
+}
+
+.empty {
+  text-align: center;
+  padding: 45px 20px;
+  color: var(--grey-text);
+  font-size: 17px;
+}
+
+/* ---------- מסכי כניסה והרשמה ---------- */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark);
+  padding: 20px;
+}
+
+.auth-box {
+  background: white;
+  border-radius: 14px;
+  padding: 32px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.auth-logo {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: var(--grey-text);
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 15px;
+}
+
+.auth-link a {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ---------- תפריט דף הבית ---------- */
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 16px;
+}
+
+.menu-item {
+  background: white;
+  border-radius: var(--radius);
+  padding: 26px 20px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--dark);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid var(--gold);
+}
+
+.menu-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.13);
+}
+
+.menu-item .icon {
+  font-size: 34px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.menu-item .title {
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 4px;
+}
+
+.menu-item .desc {
+  font-size: 13px;
+  color: var(--grey-text);
+}
+
+.welcome {
+  background: var(--dark);
+  color: white;
+  border-radius: var(--radius);
+  padding: 26px;
+  margin-bottom: 22px;
+}
+
+.welcome h1 {
+  font-size: 26px;
+  margin-bottom: 5px;
+}
+
+.welcome h1 span {
+  color: var(--gold);
+}
+
+.welcome p {
+  color: #b5b5b5;
+  font-size: 15px;
+}
+
+/* ---------- שלבי הזמנת תור ---------- */
+
+.steps {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.step {
+  flex: 1;
+  min-width: 120px;
+  padding: 11px;
+  text-align: center;
+  background: white;
+  border-radius: 7px;
+  font-size: 14px;
+  color: var(--grey-text);
+  border: 2px solid transparent;
+}
+
+.step.active {
+  border-color: var(--gold);
+  color: var(--dark);
+  font-weight: 700;
+}
+
+.step.done {
+  background: #f6f1de;
+  color: #8a6d0b;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 12px;
+}
+
+.choice {
+  padding: 16px;
+  border: 2px solid var(--border);
+  border-radius: 9px;
+  background: white;
+  text-align: center;
+  font-size: 15px;
+}
+
+.choice:hover {
+  border-color: var(--gold);
+}
+
+.choice.selected {
+  border-color: var(--gold);
+  background: #fdf9ec;
+  font-weight: 700;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 9px;
+}
+
+.slot {
+  padding: 11px 6px;
+  border: 2px solid var(--border);
+  border-radius: 7px;
+  background: white;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.slot:hover {
+  border-color: var(--gold);
+}
+
+.slot.selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  font-weight: 700;
+}
+
+/* ---------- רשימות ---------- */
+
+.list-item {
+  background: white;
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 11px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-inline-start: 4px solid var(--gold);
+}
+
+.list-item .info h3 {
+  font-size: 17px;
+  margin-bottom: 4px;
+}
+
+.list-item .info p {
+  font-size: 14px;
+  color: var(--grey-text);
+  margin-bottom: 2px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- החנות ---------- */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.product-image {
+  height: 150px;
+  background: var(--grey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-body {
+  padding: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-body h3 {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.product-body .desc {
+  font-size: 13px;
+  color: var(--grey-text);
+  flex: 1;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.out-of-stock {
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ---------- טבלאות ---------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+th {
+  background: var(--dark);
+  color: white;
+  padding: 11px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+td {
+  padding: 11px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--grey);
+}
+
+.badge.gold {
+  background: #f6f1de;
+  color: #8a6d0b;
+}
+
+.badge.green {
+  background: #e8f6ed;
+  color: var(--green);
+}
+
+.badge.red {
+  background: #fdeaea;
+  color: var(--red);
+}
+
+/* ---------- מסך התשלום ---------- */
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+}
+
+.summary-row.total {
+  border-bottom: none;
+  border-top: 2px solid var(--dark);
+  margin-top: 8px;
+  padding-top: 12px;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.two-columns {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ---------- מסך אישור ---------- */
+
+.confirm-box {
+  text-align: center;
+  padding: 45px 24px;
+}
+
+.confirm-box .big-icon {
+  font-size: 56px;
+  margin-bottom: 14px;
+}
+
+.confirm-box h2 {
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+
+.order-number {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  background: var(--grey);
+  padding: 11px 22px;
+  border-radius: 7px;
+  display: inline-block;
+  margin: 14px 0 22px;
+  direction: ltr;
+}
+
+/* ---------- התאמה למסך קטן ---------- */
+
+@media (max-width: 700px) {
+  .form-grid,
+  .two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar-inner {
+    padding: 10px 0;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    padding: 6px 9px;
+  }
+
+  .page-title {
+    font-size: 23px;
+  }
+
+  .list-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
