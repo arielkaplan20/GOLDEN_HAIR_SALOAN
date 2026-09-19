@@ -286,7 +286,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-1 - הרשמה לאפליקציה",
     "המשתמש ממלא את פרטיו, המערכת בודקת את תקינותם, מצפינה את הסיסמה ושומרת את המשתמש החדש.",
     [
-      'actor "User" as U',
+      'actor "משתמש" as U',
       'participant "Users Manager" as UM',
       'participant "Users DB" as DB',
       "",
@@ -315,7 +315,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-2 - התחברות לאפליקציה",
     "המשתמש מזין דוא״ל וסיסמה, המערכת מאמתת אותם מול מסד הנתונים ומעבירה אותו לממשק המותאם להרשאותיו.",
     [
-      'actor "User" as U',
+      'actor "משתמש" as U',
       'participant "Users Manager" as UM',
       'participant "Users DB" as DB',
       "",
@@ -343,7 +343,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-3 - הזמנת תור",
     "התהליך המרכזי במערכת. שים לב לשתי הפניות למסד הנתונים: הראשונה לחישוב השעות הפנויות, והשנייה לבדיקה חוזרת ממש לפני השמירה, כדי למנוע מצב שבו שני לקוחות תופסים את אותה שעה.",
     [
-      'actor "Customer" as C',
+      'actor "לקוח" as C',
       'participant "Appointments Manager" as AM',
       'participant "Appointments DB" as ADB',
       'participant "Service Providers DB" as SDB',
@@ -383,7 +383,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-4 - צפייה בתורים קיימים",
     "המערכת שולפת ומציגה אך ורק את התורים העתידיים של הלקוח המחובר.",
     [
-      'actor "Customer" as C',
+      'actor "לקוח" as C',
       'participant "Appointments Manager" as AM',
       'participant "Appointments DB" as DB',
       "",
@@ -407,7 +407,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-5 - שינוי תור",
     "המועד הישן משתחרר והמועד החדש נתפס. שתי הפעולות מתבצעות יחד, כך שלא ייווצר מצב ביניים שבו הלקוח נשאר בלי תור.",
     [
-      'actor "Customer" as C',
+      'actor "לקוח" as C',
       'participant "Appointments Manager" as AM',
       'participant "Appointments DB" as DB',
       "",
@@ -448,7 +448,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-6 - ביטול תור",
     "התהליך כולל חלון אישור. אם הלקוח אינו מאשר, התור נשאר במערכת ללא שינוי.",
     [
-      'actor "Customer" as C',
+      'actor "לקוח" as C',
       'participant "Appointments Manager" as AM',
       'participant "Appointments DB" as DB',
       "",
@@ -484,7 +484,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-7 - רכישה בחנות האפליקציה",
     "התהליך הארוך ביותר במערכת. פרטי האשראי עוברים לשירות הסליקה החיצוני ואינם נשמרים במסד הנתונים של האתר.",
     [
-      'actor "Customer" as C',
+      'actor "לקוח" as C',
       'participant "Shop and Orders Manager" as SM',
       'participant "Shop and Orders DB" as DB',
       'participant "Payment Service" as PAY',
@@ -529,7 +529,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-8 - עדכון פרופיל אישי",
     "התהליך זמין לכל סוגי המשתמשים: לקוח, נותן שירות ומנהל.",
     [
-      'actor "User" as U',
+      'actor "משתמש" as U',
       'participant "Users Manager" as UM',
       'participant "Users DB" as DB',
       "",
@@ -564,7 +564,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-9 - ניהול יומן ושעות עבודה",
     "התרשים כולל את שני חלקי התהליך: צפייה ביומן התורים, ועריכת ימי ושעות העבודה.",
     [
-      'actor "Barber" as B',
+      'actor "נותן שירות" as B',
       'participant "Schedule Manager" as SCM',
       'participant "Appointments DB" as ADB',
       'participant "Service Providers DB" as SDB',
@@ -609,7 +609,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-10 - ניהול משתמשים והרשאות",
     "המנהל הראשי מעניק הרשאות לנותני שירות. התהליך כולל חלון אישור לפני ביצוע השינוי.",
     [
-      'actor "Admin" as A',
+      'actor "מנהל ראשי" as A',
       'participant "Users Manager" as UM',
       'participant "Users DB" as DB',
       "",
@@ -645,7 +645,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-11 - ניהול תורים כולל",
     "המנהל הראשי צופה בכלל התורים שנקבעו במערכת, בניגוד לנותן השירות שרואה את התורים שנקבעו אליו בלבד.",
     [
-      'actor "Admin" as A',
+      'actor "מנהל ראשי" as A',
       'participant "Appointments Manager" as AM',
       'participant "Appointments DB" as DB',
       "",
@@ -669,7 +669,7 @@ const sequenceDiagrams =
   seqDiagram("SUC-12 - ניהול החנות וההזמנות",
     "המנהל הראשי מנהל את מוצרי החנות וצופה בכלל ההזמנות שבוצעו.",
     [
-      'actor "Admin" as A',
+      'actor "מנהל ראשי" as A',
       'participant "Shop and Orders Manager" as SM',
       'participant "Shop and Orders DB" as DB',
       "",

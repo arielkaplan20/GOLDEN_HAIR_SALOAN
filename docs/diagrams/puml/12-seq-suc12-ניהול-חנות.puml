@@ -19,7 +19,7 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "Admin" as A
+actor "מנהל ראשי" as A
 participant "Shop and Orders Manager" as SM
 participant "Shop and Orders DB" as DB
 

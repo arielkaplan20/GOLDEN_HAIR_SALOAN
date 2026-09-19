@@ -19,7 +19,7 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "Customer" as C
+actor "לקוח" as C
 participant "Appointments Manager" as AM
 participant "Appointments DB" as DB
 

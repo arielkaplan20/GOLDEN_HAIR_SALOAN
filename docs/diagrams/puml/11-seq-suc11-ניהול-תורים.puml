@@ -19,7 +19,7 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "Admin" as A
+actor "מנהל ראשי" as A
 participant "Appointments Manager" as AM
 participant "Appointments DB" as DB
 

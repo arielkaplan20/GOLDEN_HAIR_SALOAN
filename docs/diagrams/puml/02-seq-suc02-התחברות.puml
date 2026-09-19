@@ -19,7 +19,7 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "User" as U
+actor "משתמש" as U
 participant "Users Manager" as UM
 participant "Users DB" as DB
 

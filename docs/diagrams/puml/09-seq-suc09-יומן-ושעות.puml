@@ -19,7 +19,7 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "Barber" as B
+actor "נותן שירות" as B
 participant "Schedule Manager" as SCM
 participant "Appointments DB" as ADB
 participant "Service Providers DB" as SDB
