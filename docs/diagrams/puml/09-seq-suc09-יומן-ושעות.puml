@@ -1,4 +1,5 @@
 @startuml
+hide footbox
 skinparam backgroundColor white
 skinparam defaultFontName Arial
 skinparam defaultFontSize 13
@@ -18,10 +19,10 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "נותן שירות" as B
-participant "ניהול היומן" as SCM
-participant "מסד נתוני התורים" as ADB
-participant "מסד נתוני נותני השירות" as SDB
+actor "Barber" as B
+participant "Schedule Manager" as SCM
+participant "Appointments DB" as ADB
+participant "Service Providers DB" as SDB
 
 activate B
 B -> SCM : 1.0 כניסה לאזור "יומן תורים"

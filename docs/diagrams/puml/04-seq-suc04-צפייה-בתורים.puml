@@ -1,4 +1,5 @@
 @startuml
+hide footbox
 skinparam backgroundColor white
 skinparam defaultFontName Arial
 skinparam defaultFontSize 13
@@ -18,9 +19,9 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "לקוח" as C
-participant "ניהול התורים" as AM
-participant "מסד נתוני התורים" as DB
+actor "Customer" as C
+participant "Appointments Manager" as AM
+participant "Appointments DB" as DB
 
 activate C
 C -> AM : 1.0 כניסה לאזור "התורים שלי"

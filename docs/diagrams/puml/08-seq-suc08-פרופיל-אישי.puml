@@ -1,4 +1,5 @@
 @startuml
+hide footbox
 skinparam backgroundColor white
 skinparam defaultFontName Arial
 skinparam defaultFontSize 13
@@ -18,9 +19,9 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "משתמש" as U
-participant "ניהול המשתמשים" as UM
-participant "מסד נתוני המשתמשים" as DB
+actor "User" as U
+participant "Users Manager" as UM
+participant "Users DB" as DB
 
 activate U
 U -> UM : 1.0 כניסה לאזור "הפרופיל שלי"

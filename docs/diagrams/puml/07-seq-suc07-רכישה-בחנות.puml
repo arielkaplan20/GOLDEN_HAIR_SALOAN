@@ -1,4 +1,5 @@
 @startuml
+hide footbox
 skinparam backgroundColor white
 skinparam defaultFontName Arial
 skinparam defaultFontSize 13
@@ -18,10 +19,10 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "לקוח" as C
-participant "ניהול החנות" as SM
-participant "מסד נתוני החנות" as DB
-participant "שירות הסליקה" as PAY
+actor "Customer" as C
+participant "Shop and Orders Manager" as SM
+participant "Shop and Orders DB" as DB
+participant "Payment Service" as PAY
 
 activate C
 C -> SM : 1.0 כניסה לחנות

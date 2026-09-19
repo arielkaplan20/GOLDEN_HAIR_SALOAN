@@ -1,4 +1,5 @@
 @startuml
+hide footbox
 skinparam backgroundColor white
 skinparam defaultFontName Arial
 skinparam defaultFontSize 13
@@ -18,9 +19,9 @@ GroupBackgroundColor white
 GroupHeaderFontColor black
 }
 
-actor "מנהל ראשי" as A
-participant "ניהול החנות" as SM
-participant "מסד נתוני החנות" as DB
+actor "Admin" as A
+participant "Shop and Orders Manager" as SM
+participant "Shop and Orders DB" as DB
 
 activate A
 A -> SM : 1.0 כניסה לאזור "ניהול חנות"
