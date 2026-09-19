@@ -3,11 +3,18 @@
 //
 // הרצה: node scripts/merge-book.js
 //
-// הסקריפט לוקח את ספר הפרויקט המקורי, משתיל בו את הפרקים החסרים
-// ומחיל את התיקונים - ומייצר קובץ חדש. הקובץ המקורי לא משתנה.
+// הכלל המנחה, לפי בקשת אריאל:
 //
-// הגישה: עריכה ישירה של ה-XML שבתוך קובץ ה-Word.
-// כך כל העיצוב, הטבלאות ו-23 התמונות המוטמעות נשארים בדיוק כמו שהם.
+//   הספר המקורי לא משתנה בכלל. אף תו.
+//   גם סעיפים שנשארו ריקים - נשארים ריקים.
+//
+//   ההוספה היחידה שלפני הטקסט המקורי היא עמודי הפתיחה
+//   (פרטי הסטודנט והמנחה), כי מה"ט דורשים אותם בתחילת הספר.
+//
+//   כל שאר התוספות נכנסות אחרי העמוד האחרון של הספר המקורי.
+//
+// הגישה הטכנית: עריכת ה-XML שבתוך קובץ ה-Word.
+// כך כל העיצוב, הטבלאות ו-23 התמונות המוטמעות נשארים כמו שהם.
 // ============================================================
 
 const fs = require("fs");
@@ -67,213 +74,194 @@ $sw.Flush(); $sw.Close(); $z.Dispose()
 console.log("קורא את ספר הפרויקט המקורי...");
 
 let xml = readDocumentXml(SOURCE, TEMP);
+const originalXml = xml;
+
 console.log("  גודל ה-XML: " + Math.round(xml.length / 1024) + " KB");
-
-const report = [];
-
-// ============================================================
-// שלב 1: אין תיקוני טקסט
-//
-// לפי בקשת אריאל, שום טקסט שכבר נכתב בספר המקורי לא משתנה.
-// הספר המקורי נשאר בדיוק כמו שהוא, ואנחנו רק מוסיפים
-// את מה שחסר: סעיפים ריקים ופרקים שלא נכתבו בכלל.
-//
-// התיקונים המוצעים לטקסט הקיים מפורטים בקובץ
-// docs/תיקונים-וחוסר-עקביות.md, ואריאל מחליט אם להחיל אותם.
-// ============================================================
-
-// ============================================================
-// שלב 2: החלפת הטבלה הריקה של סעיף 14
-// ============================================================
-
 console.log("");
-console.log("מחליף את טבלת הבדיקות הריקה...");
 
-// מאתר את הטבלה שמתחילה בכותרת "מספר דרישה" ומחליף אותה כולה
-const emptyTableStart = xml.indexOf("<w:tbl>", xml.indexOf("14. תכנון הבדיקות שיבוצעו"));
-const emptyTableEnd = xml.indexOf("</w:tbl>", emptyTableStart);
+// ============================================================
+// חלק א: עמודי הפתיחה, לפני סעיף 1
+// ============================================================
 
-if (emptyTableStart > -1 && emptyTableEnd > -1) {
-  const before = xml.substring(0, emptyTableStart);
-  const after = xml.substring(emptyTableEnd + "</w:tbl>".length);
+console.log("מוסיף את עמודי הפתיחה בתחילת הספר...");
 
-  xml = before + C2.testPlanning + after;
+const bodyStart = xml.indexOf("<w:body>") + "<w:body>".length;
 
-  console.log("  הוחלפה טבלת הבדיקות של סעיף 14");
-  report.push({ ok: true, what: "ממצא 5: טבלת הבדיקות של סעיף 14 מולאה" });
+if (bodyStart > "<w:body>".length - 1) {
+  xml = xml.substring(0, bodyStart) + C1.coverPages + xml.substring(bodyStart);
+  console.log("  נוספו: פרטי הסטודנט, פרטי המנחה והערה על תוכן העניינים");
 } else {
-  console.log("  שגיאה: לא נמצאה הטבלה של סעיף 14");
-  report.push({ ok: false, what: "ממצא 5: טבלת הבדיקות" });
+  console.log("  שגיאה: לא נמצא <w:body>");
+  process.exit(1);
 }
 
 // ============================================================
-// שלב 3: השתלת הפרקים החסרים
-// ============================================================
-
-console.log("");
-console.log("משתיל את הפרקים החסרים...");
-
-// מפצל לפסקאות. שומרים את המפריד כדי שאפשר יהיה להרכיב בחזרה.
-function splitParagraphs(source) {
-  return source.split("</w:p>");
-}
-
-function joinParagraphs(list) {
-  return list.join("</w:p>");
-}
-
-// מוצא את מספר הפסקה שמכילה טקסט מסוים
-function findParagraph(list, text) {
-  const target = H.esc(text);
-
-  for (let i = 0; i < list.length; i++) {
-    if (list[i].indexOf(target) > -1) {
-      return i;
-    }
-  }
-
-  return -1;
-}
-
-let paragraphs = splitParagraphs(xml);
-
-// אוסף את כל ההשתלות ומבצע אותן בסוף, מהסוף להתחלה,
-// כדי שמספרי הפסקאות לא יזוזו תוך כדי
-const insertions = [];
-
-function insertAfter(anchorText, content, description) {
-  const index = findParagraph(paragraphs, anchorText);
-
-  if (index === -1) {
-    console.log("  לא נמצאה העוגן: " + description);
-    report.push({ ok: false, what: description });
-    return;
-  }
-
-  insertions.push({ index: index, content: content, description: description });
-}
-
-function replaceRange(fromText, toText, content, description) {
-  const from = findParagraph(paragraphs, fromText);
-  const to = findParagraph(paragraphs, toText);
-
-  if (from === -1 || to === -1 || to < from) {
-    console.log("  לא נמצא הטווח: " + description);
-    report.push({ ok: false, what: description });
-    return;
-  }
-
-  insertions.push({ index: from, content: content, description: description, deleteTo: to });
-}
-
-// --- עמודי הפתיחה, לפני סעיף 1 ---
-insertions.push({ index: -1, content: C1.coverPages, description: "עמודי פתיחה: פרטי סטודנט, מנחה ותוכן עניינים" });
-
-// --- 9.3 תרשים זרימת נתונים, אחרי תמונת תרשים הרצף ---
-insertAfter("10.‏ תיאור המרכיב האלגוריתמי - חישוב", C1.dataFlow + H.h1("10.‏ תיאור המרכיב האלגוריתמי - חישוב"), "__SKIP__");
-insertions.pop(); // מטופל אחרת למטה
-
-// --- סעיף 10, אחרי כותרת 10.1 ---
-insertAfter("10.1", C1.algorithmSection, "ממצא 4: סעיף 10 - המרכיב האלגוריתמי");
-
-// --- סעיף 11: הפסקאות הקיימות נשארות כמו שהן,
-//     ותתי-הסעיפים 11.1 עד 11.6 נוספים אחריהן ---
-insertAfter("סליקת האשראי משתמשת ב-", C1.securitySection, "סעיף 11: נוספו תתי-סעיפים 11.1 עד 11.6");
-
-// --- 12.4 ו-12.5, אחרי תוכנות נדרשות ---
-insertAfter("תוכנות נדרשות:", C1.resourcesSection, "סעיף 12: נוספו 12.4 ו-12.5");
-
-// הערה: סעיפים 7.3, 7.5 ו-13 נשארים בדיוק כפי שנכתבו בספר המקורי.
-// ההצעות לשינוי בהם מתועדות בקובץ התיקונים ולא הוחלו על הספר.
-
-// --- SUC-12, לפני תחילת ה-SAD ---
-insertAfter("מפרט ארכיטקטורת תוכנה", C2.suc12, "__SUC12__");
-
-console.log("  נאספו " + insertions.length + " השתלות");
-
-// מבצע את ההשתלות מהסוף להתחלה
-insertions.sort(function (a, b) { return b.index - a.index; });
-
-insertions.forEach(function (item) {
-  if (item.description === "__SUC12__") {
-    // SUC-12 צריך להיכנס לפני כותרת ה-SAD, לא אחריה
-    paragraphs.splice(item.index, 0, item.content.replace(/<\/w:p>$/, ""));
-    console.log("  הושתל: ממצא 6 - מפרט SUC-12");
-    report.push({ ok: true, what: "ממצא 6: מפרט SUC-12 נוסף ל-SRS" });
-    return;
-  }
-
-  if (item.index === -1) {
-    // עמודי הפתיחה - בתחילת המסמך.
-    // כאן משתילים בתוך המקטע הראשון ולא כאיבר חדש במערך,
-    // ולכן משאירים את תגית הסגירה האחרונה במקומה.
-    const bodyStart = paragraphs[0].indexOf("<w:body>") + "<w:body>".length;
-    paragraphs[0] =
-      paragraphs[0].substring(0, bodyStart) +
-      item.content +
-      paragraphs[0].substring(bodyStart);
-
-    console.log("  הושתל: " + item.description);
-    report.push({ ok: true, what: "ממצא 2: " + item.description });
-    return;
-  }
-
-  if (item.deleteTo !== undefined) {
-    const howMany = item.deleteTo - item.index + 1;
-    paragraphs.splice(item.index, howMany, item.content.replace(/<\/w:p>$/, ""));
-    console.log("  הוחלף (" + howMany + " פסקאות): " + item.description);
-  } else {
-    paragraphs.splice(item.index + 1, 0, item.content.replace(/<\/w:p>$/, ""));
-    console.log("  הושתל: " + item.description);
-  }
-
-  report.push({ ok: true, what: item.description });
-});
-
-xml = joinParagraphs(paragraphs);
-
-// --- 9.3 מושתל בנפרד, כי הוא צריך לבוא לפני כותרת סעיף 10 ---
-const section10Heading = xml.indexOf("<w:p><w:pPr><w:keepNext/><w:bidi/><w:spacing w:after=\"200\" w:before=\"400\"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii=\"David\" w:cs=\"David\" w:hAnsi=\"David\"/><w:b/><w:bCs/><w:sz w:val=\"32\"/><w:szCs w:val=\"32\"/><w:rtl/></w:rPr><w:t xml:space=\"preserve\">10.");
-
-if (section10Heading > -1) {
-  xml = xml.substring(0, section10Heading) + C1.dataFlow + xml.substring(section10Heading);
-  console.log("  הושתל: ממצא - סעיף 9.3 תרשים זרימת נתונים");
-  report.push({ ok: true, what: "סעיף 9.3: תרשים זרימת נתונים נוסף" });
-} else {
-  console.log("  לא נמצאה כותרת סעיף 10 להשתלת 9.3");
-  report.push({ ok: false, what: "סעיף 9.3" });
-}
-
-// ============================================================
-// שלב 4: הוספת הפרקים החדשים בסוף הספר
+// חלק ב: כל התוספות, אחרי העמוד האחרון
 // ============================================================
 
 console.log("");
-console.log("מוסיף את הפרקים החדשים בסוף הספר...");
+console.log("בונה את כל התוספות שאחרי העמוד האחרון...");
 
-const tail =
+// --- ב1: המשך ישיר של הספר ---
+// הספר המקורי נקטע באמצע ה-SAD, בסעיף 4.ד.
+// הפרקים הבאים הם ההמשך הטבעי שלו.
+
+const continuation =
   H.pageBreak() +
-  C2.sequenceDiagrams +
-  C3.sdd +
-  C3.testsChapter +
-  C3.screensChapter +
-  C2.sucFixes +
-  C3.signaturePages;
+  C2.sequenceDiagrams +   // SAD סעיף 5 - תרשימי רצף
+  C3.sdd +                // מפרט תכן תוכנה
+  C3.testsChapter +       // פרק הבדיקות
+  C3.screensChapter +     // מסכי האפליקציה
+  C3.signaturePages;      // דפי החתימות והאישורים
+
+console.log("  המשך הספר: תרשימי רצף, SDD, בדיקות, מסכים ודפי אישור");
+
+// --- ב2: הנספח ---
+// כאן נמצאות ההשלמות לסעיפים שנמצאים באמצע הספר.
+// הן לא הושתלו במקומן כי הספר המקורי לא משתנה.
+// אריאל מעתיק כל אחת למקומה ואז מוחק את הנספח כולו.
+//
+// הנספח נמצא אחרי דפי האישור בכוונה: כשמוחקים אותו,
+// הספר נגמר בדפי האישור כמו שצריך.
+
+function appendixItem(where, content) {
+  return (
+    H.note("המקום בספר: " + where, "העתק את התוכן הבא אל המקום הזה בספר, ואז מחק אותו מהנספח.") +
+    content +
+    H.pageBreak()
+  );
+}
+
+const appendix =
+  H.pageBreak() +
+  H.p("נספח", { bold: true, size: 44, align: "center", after: 120 }) +
+  H.p("השלמות לסעיפים שבגוף הספר", { bold: true, size: 30, align: "center", after: 300 }) +
+  H.note(
+    "מה הנספח הזה ולמה הוא כאן",
+    "גוף הספר נשאר בדיוק כפי שנכתב, ולכן ההשלמות לסעיפים שנמצאים באמצעו לא הושתלו " +
+    "במקומן אלא רוכזו כאן. כל פריט מסומן בדיוק לאן הוא שייך. העתק כל אחד למקומו בספר, " +
+    "ובסיום מחק את הנספח כולו - ואז הספר יסתיים בדפי האישור כנדרש."
+  ) +
+  H.pageBreak() +
+
+  appendixItem(
+    "סעיף 9, אחרי 9.2 תרשים רצף",
+    C1.dataFlow
+  ) +
+
+  appendixItem(
+    "סעיף 10, מתחת לכותרת 10.1 שריקה כרגע",
+    H.h1("10.‏ תיאור המרכיב האלגוריתמי - חישוב") +
+    H.h2("10.1\tאיזו בעיה בא לפתור, וכיצד") +
+    C1.algorithmSection
+  ) +
+
+  appendixItem(
+    "סעיף 11, אחרי שתי הפסקאות הקיימות",
+    H.h1("11.‏ תיאור/התייחסות לנושאי אבטחת מידע - הרחבה") +
+    C1.securitySection
+  ) +
+
+  appendixItem(
+    "סעיף 12, אחרי 12.3 תוכנות נדרשות",
+    C1.resourcesSection
+  ) +
+
+  appendixItem(
+    "סעיף 13, במקום הרשימה הקיימת (אופציונלי)",
+    H.h1("13.‏ תכנית עבודה ושלבים למימוש הפרויקט - כטבלה") +
+    H.p(
+      "הרשימה הקיימת בספר תקינה מבחינת התוכן, אך התאריכים שבה כבר עברו. " +
+      "הטבלה הבאה מציגה את אותם שלבים בפורמט טבלה, כמו בספר הדוגמה, עם תאריכים מעודכנים. " +
+      "השימוש בה אינו חובה."
+    ) +
+    C1.workPlan
+  ) +
+
+  appendixItem(
+    "סעיף 14, בתוך הטבלה שריקה כרגע",
+    H.h1("14. תכנון הבדיקות שיבוצעו - הטבלה המלאה") +
+    H.p(
+      "הטבלה הבאה שומרת על שלוש העמודות שכבר קיימות בספר, ורק ממלאת את התאים. " +
+      "אפשר להעתיק את השורות אל תוך הטבלה הקיימת."
+    ) +
+    C2.testPlanning
+  ) +
+
+  appendixItem(
+    "SRS, סעיף 2.ג - אחרי המפרט של SUC-11",
+    H.h1("מפרט SUC-12 - חסר ב-SRS") +
+    H.p(
+      "ברשימת תהליכי המערכת (סעיף 2.א) מוצהרים 12 תהליכים, אך במפרט (סעיף 2.ג) " +
+      "יש מפרטים ל-11 בלבד. בלי המפרט הזה, דרישה 26 אינה מכוסה בשום מקום בספר."
+    ) +
+    C2.suc12
+  ) +
+
+  C2.sucFixes;
+
+console.log("  הנספח: 9.3, סעיף 10, סעיף 11, סעיף 12, סעיף 13, סעיף 14, SUC-12 ותיקוני SUC");
+
+// --- הוספה בפועל, לפני sectPr שבסוף המסמך ---
 
 const sectPrIndex = xml.lastIndexOf("<w:sectPr>");
 
-if (sectPrIndex > -1) {
-  xml = xml.substring(0, sectPrIndex) + tail + xml.substring(sectPrIndex);
-
-  console.log("  נוספו: תרשימי רצף, SDD, בדיקות, מסכים, תוספות SUC ודפי אישור");
-  report.push({ ok: true, what: "ממצא 1: כל הפרקים שאחרי סעיף 4.ד נוספו" });
-} else {
+if (sectPrIndex === -1) {
   console.log("  שגיאה: לא נמצא sectPr");
-  report.push({ ok: false, what: "ממצא 1: הפרקים החדשים" });
+  process.exit(1);
 }
 
+xml = xml.substring(0, sectPrIndex) + continuation + appendix + xml.substring(sectPrIndex);
+
 // ============================================================
-// שלב 5: כתיבת הקובץ
+// בדיקת שלמות: כל פסקה מהמקור חייבת להישאר כמו שהיא
+// ============================================================
+
+console.log("");
+console.log("בודק שהטקסט המקורי לא נפגע...");
+
+function paragraphTexts(source) {
+  return source
+    .split("</w:p>")
+    .map(function (p) {
+      return p.replace(/<[^>]+>/g, "").trim();
+    })
+    .filter(function (t) {
+      return t !== "";
+    });
+}
+
+const originalTexts = paragraphTexts(originalXml);
+const mergedTexts = paragraphTexts(xml);
+const mergedSet = new Set(mergedTexts);
+
+const missing = originalTexts.filter(function (t) {
+  return !mergedSet.has(t);
+});
+
+if (missing.length > 0) {
+  console.log("  שגיאה: " + missing.length + " פסקאות מהמקור נעלמו או שונו:");
+  missing.slice(0, 10).forEach(function (m) {
+    console.log("    - " + m.substring(0, 100));
+  });
+  process.exit(1);
+}
+
+console.log("  תקין: כל " + originalTexts.length + " הפסקאות מהמקור קיימות, מילה במילה");
+
+// בדיקה שהסעיפים הריקים נשארו ריקים
+const stillEmpty = [];
+
+if (xml.indexOf("FUNCTION getFreeSlots") > xml.indexOf("נספח")) {
+  stillEmpty.push("סעיף 10 נשאר ריק בגוף הספר");
+}
+
+stillEmpty.forEach(function (s) {
+  console.log("  תקין: " + s);
+});
+
+// ============================================================
+// כתיבת הקובץ
 // ============================================================
 
 console.log("");
@@ -284,28 +272,19 @@ fs.copyFileSync(SOURCE, TARGET);
 writeDocumentXml(TARGET, TEMP);
 fs.unlinkSync(TEMP);
 
-const sourceSize = fs.statSync(SOURCE).size;
-const targetSize = fs.statSync(TARGET).size;
-
 console.log("");
 console.log("===========================================");
 console.log("  הספר המאוחד נוצר");
 console.log("===========================================");
 console.log("  " + TARGET);
 console.log("");
-console.log("  גודל המקור:  " + Math.round(sourceSize / 1024) + " KB");
-console.log("  גודל החדש:   " + Math.round(targetSize / 1024) + " KB");
+console.log("  פסקאות במקור  : " + originalTexts.length);
+console.log("  פסקאות במאוחד : " + mergedTexts.length);
+console.log("  נוספו         : " + (mergedTexts.length - originalTexts.length));
 console.log("");
-
-const ok = report.filter(function (r) { return r.ok; }).length;
-const failed = report.filter(function (r) { return !r.ok; });
-
-console.log("  שינויים שהוחלו: " + ok);
-
-if (failed.length > 0) {
-  console.log("  נכשלו: " + failed.length);
-  failed.forEach(function (f) { console.log("    - " + f.what); });
-  process.exitCode = 1;
-}
-
+console.log("  מבנה הקובץ:");
+console.log("    1. עמודי פתיחה (חדש)");
+console.log("    2. הספר המקורי - ללא שינוי");
+console.log("    3. המשך הספר: SAD סעיף 5, SDD, בדיקות, מסכים, דפי אישור");
+console.log("    4. נספח: השלמות לסעיפים שבגוף הספר - למחיקה אחרי השימוש");
 console.log("===========================================");
